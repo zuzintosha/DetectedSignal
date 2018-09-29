@@ -303,7 +303,7 @@ void MainWindow::on_pushButton_3_clicked()
     QVector<int> bits(numberOfBits);
     QVector<int> bitsForMinFrequencyModulation(numberOfBits);
 
-   // ui->signalGraphic->xAxis->setRange(0,numberOfBits);
+    //ui->signalGraphic->xAxis->setRange(0,numberOfBits);
     //ui->signalGraphic->yAxis->setRange(0,1);
 
     for(int i = 0; i < numberOfBits; i++){

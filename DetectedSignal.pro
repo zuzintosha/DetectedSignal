@@ -27,14 +27,12 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         qcustomplot.cpp \
-    signal.cpp \
-    testclass.cpp
+    signal.cpp
 
 HEADERS += \
         mainwindow.h \
     qcustomplot.h \
-    signal.h \
-    testclass.h
+    signal.h
 
 FORMS += \
         mainwindow.ui
