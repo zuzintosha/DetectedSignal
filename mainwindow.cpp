@@ -8,8 +8,25 @@
 #include "QtDebug"
 #include <fstream>
 #include "signal.h"
+#include "parameters.h"
 #include "testclass.h"
 using namespace std;
+
+#define PI 3.1415
+
+Signal generateDefaultSignal(const Parameters* parameters){
+    Signal signal(parameters->sizeOfSignal);
+
+    double arg = 0;
+    for(int i = 0; i < parameters->sizeOfSignal; i++){
+        arg = 2*PI*parameters->frequency*i*parameters->samplingPeriod;
+        if(arg > 2*PI) arg -= 2*PI;
+        signal.y[i] = sin(arg + parameters->phi_0);
+        signal.x[i] = i*parameters->samplingPeriod;
+    }
+
+    return signal;
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,8 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
     int size = ui->lineEditNumberOfBits->text().toDouble();
     qDebug() << "Begin initialization: " << size;
 
-    testClass = new TestClass();
     signal = new Signal();
+    parameters = new Parameters(
+                    ui->lineEditFrequency->text().toDouble(),
+                    0,
+                    ui->lineEditSamplingFrequency->text().toDouble(),
+                    ui->lineEditPeriod->text().toDouble()
+                );
 
     //тут создам сигнал
     //signal = new Signal();
@@ -38,12 +60,11 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete signal;
-    delete testClass;
+    delete parameters;
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-        double pi = 3.14;
         double frequency = ui->lineEditFrequency->text().toDouble();//25000;
         double phi_0 = 0;
         double samplingFrequency = ui->lineEditSamplingFrequency->text().toDouble();//250000;
@@ -52,22 +73,32 @@ void MainWindow::on_pushButton_clicked()
         double samplingPeriod = T / samplingFrequency;
         QVector<double> x(N),y(N);
 
+        Signal signalTest(N);
+
+        qDebug() << "Frequency: " << parameters->frequency;
+        qDebug() << "Phi_0: " << parameters->phi_0;
+        qDebug() << "Sampling frequency: " << parameters->samplingFrequency;
+
         ui->signalGraphic->xAxis->setRange(0,T);
         ui->signalGraphic->yAxis->setRange(-1,1);
 
         double arg = 0;
         for(int i = 0; i < N; i++){
-            arg = 2*pi*frequency*i*samplingPeriod;
-            if(arg > 2*pi) arg -= 2*pi;
-            y[i] = sin(arg + phi_0);
-            x[i] = i*samplingPeriod;
+            arg = 2*PI*frequency*i*samplingPeriod;
+            if(arg > 2*PI) arg -= 2*PI;
+            signalTest.y[i] = y[i] = sin(arg + phi_0);
+            signalTest.x[i] = x[i] = i*samplingPeriod;
         }
+
+        Signal defaultSignal = generateDefaultSignal(parameters);
 
         ui->signalGraphic->clearGraphs();//Если нужно, но очищаем все графики
         //Добавляем один график в signalGraphic
         ui->signalGraphic->addGraph();
         //Говорим, что отрисовать нужно график по нашим двум массивам x и y
-        ui->signalGraphic->graph(0)->setData(x, y);
+        //ui->signalGraphic->graph(0)->setData(x, y);
+        //ui->signalGraphic->graph(0)->setData(signalTest.x, signalTest.y);
+        ui->signalGraphic->graph(0)->setData(defaultSignal.x,defaultSignal.y);
 
         ui->signalGraphic->replot();
 }

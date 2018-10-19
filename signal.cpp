@@ -6,10 +6,9 @@ Signal::Signal() {
 
 Signal::Signal(int size) {
     this->size = size;
-    if(size >= 0){
-        this->x.resize(size);
-        this->y.resize(size);
-    }
+    if(size < 0) this->size = 0;
+    this->x.resize(size);
+    this->y.resize(size);
 }
 
 int Signal::getSize() {

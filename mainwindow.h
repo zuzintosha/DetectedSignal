@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 class Signal;
-class TestClass;
+class Parameters;
 namespace Ui {
 class MainWindow;
 }
@@ -17,8 +17,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    TestClass* testClass;
     Signal* signal;
+    Parameters* parameters;
 
 private slots:
     void on_pushButton_clicked();
